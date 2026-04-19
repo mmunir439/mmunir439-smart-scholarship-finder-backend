@@ -1,11 +1,12 @@
-const Student  = require("../models/student"); // adjust path if needed
+const Student = require("../models/students"); // adjust path if needed
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 // REGISTER
 const registerUser = async (req, res) => {
   try {
-    const { email, password, cgpa, ielts, degreeLevel, academicField } = req.body;
+    const { email, password, cgpa, ielts, degreeLevel, academicField } =
+      req.body;
 
     // check if user already exists
     const existingUser = await Student.findOne({ email });
@@ -23,7 +24,7 @@ const registerUser = async (req, res) => {
       cgpa,
       ielts,
       degreeLevel,
-      academicField
+      academicField,
     });
 
     await newUser.save();
@@ -32,15 +33,13 @@ const registerUser = async (req, res) => {
       message: "User registered successfully",
       user: {
         id: newUser._id,
-        email: newUser.email
-      }
+        email: newUser.email,
+      },
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 // LOGIN
 const loginUser = async (req, res) => {
@@ -63,7 +62,7 @@ const loginUser = async (req, res) => {
     const token = jwt.sign(
       { id: user._id },
       "your_secret_key", // move this to .env later
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
 
     res.status(200).json({
@@ -71,10 +70,9 @@ const loginUser = async (req, res) => {
       token,
       user: {
         id: user._id,
-        email: user.email
-      }
+        email: user.email,
+      },
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -82,5 +80,5 @@ const loginUser = async (req, res) => {
 
 module.exports = {
   registerUser,
-  loginUser
+  loginUser,
 };
