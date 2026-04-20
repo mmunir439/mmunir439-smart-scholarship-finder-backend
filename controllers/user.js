@@ -1,4 +1,4 @@
-const Student = require("../models/students"); // adjust path if needed
+const User = require("../models/user"); // adjust path if needed
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -9,7 +9,7 @@ const registerUser = async (req, res) => {
       req.body;
 
     // check if user already exists
-    const existingUser = await Student.findOne({ email });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -18,7 +18,7 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // create new user
-    const newUser = new Student({
+    const newUser = new User({
       email,
       password: hashedPassword,
       cgpa,
@@ -47,7 +47,7 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     // check if user exists
-    const user = await Student.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }

@@ -2,7 +2,7 @@ require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
 const connectDB = require("./config/db");
-const studentRoutes = require("./routes/student");
+const studentRoutes = require("./routes/user");
 const app = express();
 // connect database
 connectDB();
@@ -17,7 +17,7 @@ app.use(
 app.use(express.json());
 //port declaration
 const port = process.env.PORT || 5000;
-app.use("/student", studentRoutes);
+app.use("/user", studentRoutes);
 app.get("/munir", (req, res) => {
   res.send(`server is runing on port ${port}`);
 });
