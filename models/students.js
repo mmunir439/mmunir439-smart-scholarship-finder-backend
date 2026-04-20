@@ -18,4 +18,4 @@ const stdSchema = new mongoose.Schema({
 
 const Student = mongoose.model("Student", stdSchema);
 
-module.exports = {Student};
+module.exports = Student;
