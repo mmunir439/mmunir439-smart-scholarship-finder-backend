@@ -5,37 +5,34 @@ const jwt = require("jsonwebtoken");
 // REGISTER
 const registerUser = async (req, res) => {
   try {
-    const { email, password, cgpa, ielts, degreeLevel, academicField } =
+    const { email, password, cgpa, ielts, degreeLevel, academicField, role } =
       req.body;
 
-    // check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // create new user
     const newUser = new User({
       email,
       password: hashedPassword,
-      cgpa,
-      ielts,
-      degreeLevel,
-      academicField,
+      role: role || "student",
+
+      studentProfile: {
+        cgpa: Number(cgpa),
+        ielts: Number(ielts),
+        degreeLevel,
+        academicField,
+      },
     });
+
+    console.log("SAVING USER:", newUser); // 🔥 DEBUG
 
     await newUser.save();
 
-    res.status(201).json({
-      message: "User registered successfully",
-      user: {
-        id: newUser._id,
-        email: newUser.email,
-      },
-    });
+    res.status(201).json(newUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -77,8 +74,18 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+//get currentuser
+const getCurrentUser = async (req, res) => {
+  console.log("USER:", req.user); // 👈 add this
 
+  try {
+    res.status(200).json(req.user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 module.exports = {
   registerUser,
   loginUser,
+  getCurrentUser,
 };
