@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
@@ -14,14 +18,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["student", "admin"],
     default: "student",
-  },
-
-  // Only for students
-  studentProfile: {
-    cgpa: Number,
-    ielts: Number,
-    degreeLevel: String,
-    academicField: String,
   },
 });
 

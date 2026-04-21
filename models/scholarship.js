@@ -3,43 +3,38 @@ const mongoose = require("mongoose");
 const scholarshipSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
+  country: String,
 
-  country: {
-    type: String,
-    required: true
-  },
-
-  degree: {
-    type: String, // Bachelors, Masters, PhD
-    required: true
-  },
-
-  field: {
-    type: String // Computer Science, Engineering etc
-  },
+  degreeLevel: [
+    {
+      type: String,
+      enum: ["Bachelor", "Master", "PhD"],
+    },
+  ],
 
   minCGPA: {
-    type: Number
+    type: Number,
+    default: 0,
   },
 
   minIELTS: {
-    type: Number
+    type: Number,
+    default: 0,
   },
 
-  description: {
-    type: String
-  },
+  fieldOfStudy: [String],
 
-  link: {
-    type: String
-  },
+  deadline: Date,
+  link: String,
+  description: String,
+  source: String,
 
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 module.exports = mongoose.model("Scholarship", scholarshipSchema);

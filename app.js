@@ -2,8 +2,9 @@ require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
 const connectDB = require("./config/db");
-const studentRoutes = require("./routes/user");
-const scholarshipRoutes = require("./routes/scholarship");
+const userRoutes = require("./routes/user");
+const profileRoutes = require("./routes/profileRoutes");
+const scholarshipRoutes = require("./routes/scholarshipRoutes");
 const app = express();
 // connect database
 connectDB();
@@ -18,8 +19,9 @@ app.use(
 app.use(express.json());
 //port declaration
 const port = process.env.PORT || 5000;
-app.use("/user", studentRoutes);
-app.use("/schoarship", scholarshipRoutes);
+app.use("/user", userRoutes);
+app.use("/profileRoutes", profileRoutes);
+app.use("/scholarshipRoutes", scholarshipRoutes);
 app.get("/munir", (req, res) => {
   res.send(`server is runing on port ${port}`);
 });
