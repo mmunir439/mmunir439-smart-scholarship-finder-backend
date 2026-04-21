@@ -5,6 +5,8 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/user");
 const profileRoutes = require("./routes/profileRoutes");
 const scholarshipRoutes = require("./routes/scholarshipRoutes");
+const scrapeScholarships = require("./utils/scraper");
+const matchRoutes = require("./routes/matchRoutes.js");
 const app = express();
 // connect database
 connectDB();
@@ -22,9 +24,17 @@ const port = process.env.PORT || 5000;
 app.use("/user", userRoutes);
 app.use("/profileRoutes", profileRoutes);
 app.use("/scholarshipRoutes", scholarshipRoutes);
+app.use("/matchRoutes", matchRoutes);
 app.get("/munir", (req, res) => {
   res.send(`server is runing on port ${port}`);
 });
-app.listen(port, () => {
-  console.log(`Example app listening on port ${process.env.PORT}`);
+app.listen(port, async () => {
+  console.log(`Server running on port ${port}`);
+
+  try {
+    const result = await scrapeScholarships();
+    console.log("Auto scrape result:", result);
+  } catch (err) {
+    console.log("Auto scrape failed:", err.message);
+  }
 });
