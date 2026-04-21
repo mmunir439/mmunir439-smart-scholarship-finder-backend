@@ -58,3 +58,40 @@ exports.getProfile = async (req, res) => {
     });
   }
 };
+
+exports.updateLanguage = async (req, res) => {
+  try {
+    const { language } = req.body;
+
+    if (!["en", "ur"].includes(language)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid language",
+      });
+    }
+
+    const profile = await StudentProfile.findOneAndUpdate(
+      { userId: req.user._id },
+      { preferredLanguage: language },
+      { new: true },
+    );
+
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        message: "Profile not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Language updated successfully",
+      data: profile,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};

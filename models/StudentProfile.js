@@ -29,6 +29,11 @@ const studentProfileSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  preferredLanguage: {
+    type: String,
+    enum: ["en", "ur"],
+    default: "en",
+  },
 });
 
 module.exports = mongoose.model("Stdprofile", studentProfileSchema);

@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/user");
 const profileRoutes = require("./routes/profileRoutes");
 const scholarshipRoutes = require("./routes/scholarshipRoutes");
+const lang = require("./routes/langRoutes");
 const scrapeScholarships = require("./utils/scraper");
 const matchRoutes = require("./routes/matchRoutes.js");
 const app = express();
@@ -25,6 +26,7 @@ app.use("/user", userRoutes);
 app.use("/profileRoutes", profileRoutes);
 app.use("/scholarshipRoutes", scholarshipRoutes);
 app.use("/matchRoutes", matchRoutes);
+app.use("/lang", lang);
 app.get("/munir", (req, res) => {
   res.send(`server is runing on port ${port}`);
 });
