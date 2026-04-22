@@ -8,6 +8,10 @@ const scholarshipRoutes = require("./routes/scholarshipRoutes");
 const lang = require("./routes/langRoutes");
 const scrapeScholarships = require("./utils/scraper");
 const matchRoutes = require("./routes/matchRoutes.js");
+const adminroutes = require("./routes/adminRoutes.js");
+const ttsRoutes = require("./routes/ttsRoutes");
+const statsRoutes = require("./routes/statsRoutes");
+
 const app = express();
 // connect database
 connectDB();
@@ -26,6 +30,9 @@ app.use("/user", userRoutes);
 app.use("/profileRoutes", profileRoutes);
 app.use("/scholarshipRoutes", scholarshipRoutes);
 app.use("/matchRoutes", matchRoutes);
+app.use("/ttsRoutes", ttsRoutes);
+app.use("/admin", adminroutes);
+app.use("/stats", statsRoutes);
 app.use("/lang", lang);
 app.get("/munir", (req, res) => {
   res.send(`server is runing on port ${port}`);
