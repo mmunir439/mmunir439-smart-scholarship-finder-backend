@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const StudentProfile = require("../models/academicinformation");
-const Scholarship = require("../models/Scholarship");
 const scrapeScholarships = require("../utils/scraper");
 const { protect, adminOnly } = require("../middleware/auth");
 

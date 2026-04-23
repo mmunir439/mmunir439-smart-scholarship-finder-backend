@@ -1,6 +1,6 @@
-const Scholarship = require('../models/Scholarship');
+const Scholarship = require("../models/scholarship");
 //get all schoalrhips route in here
-exports.getScholarships = async (req, res) => {
+const getScholarships = async (req, res) => {
   try {
     const { country, degreeLevel, field } = req.query;
 
@@ -14,104 +14,99 @@ exports.getScholarships = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data
+      data,
     });
-
   } catch (err) {
     res.status(400).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 };
-exports.getScholarshipById = async (req, res) => {
+const getScholarshipById = async (req, res) => {
   try {
     const data = await Scholarship.findById(req.params.id);
 
     if (!data) {
       return res.status(404).json({
         success: false,
-        message: "Not found"
+        message: "Not found",
       });
     }
 
     res.status(200).json({
       success: true,
-      data
+      data,
     });
-
   } catch (err) {
     res.status(400).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 };
-exports.createScholarship = async (req, res) => {
+const createScholarship = async (req, res) => {
   try {
     const data = await Scholarship.create(req.body);
 
     res.status(201).json({
       success: true,
       message: "Created",
-      data
+      data,
     });
-
   } catch (err) {
     res.status(400).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 };
-exports.updateScholarship = async (req, res) => {
+const updateScholarship = async (req, res) => {
   try {
-    const data = await Scholarship.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const data = await Scholarship.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
 
     if (!data) {
       return res.status(404).json({
         success: false,
-        message: "Not found"
+        message: "Not found",
       });
     }
 
     res.status(200).json({
       success: true,
       message: "Updated",
-      data
+      data,
     });
-
   } catch (err) {
     res.status(400).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 };
-exports.deleteScholarship = async (req, res) => {
+const deleteScholarship = async (req, res) => {
   try {
     const data = await Scholarship.findByIdAndDelete(req.params.id);
 
     if (!data) {
       return res.status(404).json({
         success: false,
-        message: "Not found"
+        message: "Not found",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "Deleted"
+      message: "Deleted",
     });
-
   } catch (err) {
     res.status(400).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 };
+
+module.exports={getScholarships,deleteScholarship,updateScholarship,createScholarship,getScholarshipById}
