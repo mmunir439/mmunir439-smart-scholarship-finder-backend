@@ -5,7 +5,7 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/user");
 const adminRoutes = require("./routes/adminRoutes.js");
 const academicinformation = require("./routes/academicinformation.js");
-const startScheduler = require("./scraper/scheduler"); // ✅ import
+const startScheduler = require("./scrapers/scheduler"); // ✅ import
 const app = express();
 // connect database
 connectDB();

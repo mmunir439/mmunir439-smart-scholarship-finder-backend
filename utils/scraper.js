@@ -1,53 +1,27 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
-const Scholarship = require('../models/Scholarship');
+const axios = require("axios");
+const cheerio = require("cheerio");
+const Scholarship = require("../models/Scholarship");
+// import Scholarship model
 
-const scrapeScholarships = async () => {
+// reusable function to save ONE scholarship
+const saveScholarship = async (data) => {
   try {
-    const url = 'https://www.scholars4dev.com';
+    // find existing document by link and update OR insert new one
+    const result = await Scholarship.findOneAndUpdate(
+      { link: data.link }, // unique condition (link)
+      data, // new data
+      {
+        upsert: true, // create if not exists
+        new: true, // return updated document
+      },
+    );
 
-    const response = await axios.get(url);
-    const $ = cheerio.load(response.data);
-
-    let operations = [];
-
-    $('.entry-title a').each((i, el) => {
-      const name = $(el).text().trim();
-      const link = $(el).attr('href');
-
-      // Dummy extraction (real sites vary)
-      const country = "Unknown";
-      const degreeLevel = ["Master"];
-      const deadline = new Date();
-      const description = name;
-
-      operations.push({
-        updateOne: {
-          filter: { link }, // avoid duplicates
-          update: {
-            name,
-            link,
-            country,
-            degreeLevel,
-            description,
-            source: "scholars4dev"
-          },
-          upsert: true
-        }
-      });
-    });
-
-    const result = await Scholarship.bulkWrite(operations);
-
-    return {
-      inserted: result.upsertedCount,
-      updated: result.modifiedCount,
-      total: operations.length
-    };
-
+    return result; // return saved document
   } catch (error) {
-    throw new Error("Scraping failed: " + error.message);
+    // handle errors safely
+    console.error("❌ Error saving scholarship:", error.message);
+    return null; // return null if error happens
   }
 };
 
-module.exports = scrapeScholarships;
+module.exports = saveScholarship; // export function

@@ -4,14 +4,13 @@ const sources = require("./sources");
 const Scholarship = require("../models/Scholarship"); // ✅ needed for saveScrapedData
 
 // ✅ Fix 1 — saveScrapedData defined here
+const saveScholarship = require("../utils/scraper");
+
 const saveScrapedData = async (scholarships) => {
   for (const item of scholarships) {
-    await Scholarship.findOneAndUpdate(
-      { name: item.name, link: item.link }, // match condition
-      item, // update data
-      { upsert: true, new: true }, // insert if not exists
-    );
+    await saveScholarship(item); // call reusable function
   }
+
   console.log(`💾 ${scholarships.length} scholarships saved/updated`);
 };
 
