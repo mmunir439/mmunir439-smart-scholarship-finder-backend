@@ -3,15 +3,9 @@ const cors = require("cors");
 const express = require("express");
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/user");
-const profileRoutes = require("./routes/profileRoutes");
-const scholarshipRoutes = require("./routes/scholarshipRoutes");
-const lang = require("./routes/langRoutes");
-const scrapeScholarships = require("./utils/scraper");
-const matchRoutes = require("./routes/matchRoutes.js");
-const adminroutes = require("./routes/adminRoutes.js");
-const ttsRoutes = require("./routes/ttsRoutes");
-const statsRoutes = require("./routes/statsRoutes");
-
+const adminRoutes = require("./routes/adminRoutes.js");
+const academicinformation = require("./routes/academicinformation.js");
+const startScheduler = require("./scraper/scheduler"); // ✅ import
 const app = express();
 // connect database
 connectDB();
@@ -22,18 +16,16 @@ app.use(
     credentials: true,
   }),
 );
+
+startScheduler();
+
 // Middleware
 app.use(express.json());
 //port declaration
 const port = process.env.PORT || 5000;
 app.use("/user", userRoutes);
-app.use("/profileRoutes", profileRoutes);
-app.use("/scholarshipRoutes", scholarshipRoutes);
-app.use("/matchRoutes", matchRoutes);
-app.use("/ttsRoutes", ttsRoutes);
-app.use("/admin", adminroutes);
-app.use("/stats", statsRoutes);
-app.use("/lang", lang);
+app.use("/academicinformation", academicinformation);
+app.use("/admin", adminRoutes);
 app.get("/munir", (req, res) => {
   res.send(`server is runing on port ${port}`);
 });

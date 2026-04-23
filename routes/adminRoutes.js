@@ -1,30 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const StudentProfile = require("../models/StudentProfile");
+const StudentProfile = require("../models/academicinformation");
 const Scholarship = require("../models/Scholarship");
 const scrapeScholarships = require("../utils/scraper");
 const { protect, adminOnly } = require("../middleware/auth");
 
-router.post("/admin/scrape", protect, adminOnly, async (req, res) => {
-  try {
-    const result = await scrapeScholarships();
-
-    res.status(200).json({
-      success: true,
-      message: "Scraping completed",
-      ...result,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+// routes/admin.js
+router.post("/add", adminOnly, async (req, res) => {
+  const scholarship = new Scholarship({ ...req.body, addedBy: "admin" });
+  await scholarship.save();
+  res.json({ message: "Scholarship added successfully", scholarship });
 });
 
-// Apply both middlewares to ALL routes
-router.use(protect, adminOnly);
 
 // ======================================
 // 1. GET ALL USERS + THEIR PROFILES
