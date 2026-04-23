@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const StudentProfile = require("../models/academicinformation");
-const scrapeScholarships = require("../utils/scraper");
+const StudentProfile = require("../models/academic");
 const { protect, adminOnly } = require("../middleware/auth");
 
 // routes/admin.js
@@ -11,7 +10,6 @@ router.post("/add", adminOnly, async (req, res) => {
   await scholarship.save();
   res.json({ message: "Scholarship added successfully", scholarship });
 });
-
 
 // ======================================
 // 1. GET ALL USERS + THEIR PROFILES

@@ -1,6 +1,6 @@
-const AcademicInformation = require("../models/academicinformation");
+const AcademicInformation = require("../models/academic");
 
-const academicinformation = async (req, res) => {
+const createAcademicprofile = async (req, res) => {
   try {
     const { cgpa, ielts, degreeLevel, field } = req.body;
 
@@ -9,6 +9,7 @@ const academicinformation = async (req, res) => {
       ielts,
       degreeLevel,
       field,
+      userId: req.user._id, // don't forget this if required
     });
 
     await newRecord.save();
@@ -26,4 +27,4 @@ const academicinformation = async (req, res) => {
   }
 };
 
-module.exports = academicinformation;
+module.exports = createAcademicprofile;

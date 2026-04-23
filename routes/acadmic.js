@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middleware/auth");
-const academicinformation = require("../controllers/academicinformation");
-router.post("/academicinformation", protect, academicinformation);
+const academicController = require("../controllers/academic");
+router.post("/", academicController);
 
 module.exports = router;
