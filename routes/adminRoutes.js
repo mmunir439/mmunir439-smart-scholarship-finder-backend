@@ -1,27 +1,26 @@
 const express = require("express");
 const router = express.Router();
+
+// Models
 const User = require("../models/User");
 const StudentProfile = require("../models/academic");
-const { protect, adminOnly } = require("../middleware/auth");
-
-// routes/admin.js
-router.post("/add", adminOnly, async (req, res) => {
-  const scholarship = new Scholarship({ ...req.body, addedBy: "admin" });
-  await scholarship.save();
-  res.json({ message: "Scholarship added successfully", scholarship });
-});
+const Scholarship = require("../models/scholarship");
+const { protect, adminOnly } = require("../middleware/auth.js");
 
 // ======================================
-// 1. GET ALL USERS + THEIR PROFILES
+// USERS MANAGEMENT
+// ======================================
+
+// 1. GET ALL USERS + PROFILES
 // GET /api/admin/users
-// ======================================
-router.get("/users", async (req, res) => {
+router.get("/users", protect, adminOnly, async (req, res) => {
   try {
     const users = await User.find().select("-password");
 
     const usersWithProfiles = await Promise.all(
       users.map(async (user) => {
         const profile = await StudentProfile.findOne({ userId: user._id });
+
         return {
           ...user.toObject(),
           profile: profile || null,
@@ -31,15 +30,13 @@ router.get("/users", async (req, res) => {
 
     res.status(200).json(usersWithProfiles);
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message });
   }
 });
 
-// ======================================
 // 2. DELETE USER + PROFILE
 // DELETE /api/admin/users/:id
-// ======================================
-router.delete("/users/:id", async (req, res) => {
+router.delete("/users/:id", protect, adminOnly, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
 
@@ -52,14 +49,16 @@ router.delete("/users/:id", async (req, res) => {
 
     res.status(200).json({ message: "User and profile deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message });
   }
 });
 
 // ======================================
-// 3. GET ALL SCHOLARSHIPS + COUNT
-// GET /api/admin/scholarships
+// SCHOLARSHIP MANAGEMENT
 // ======================================
+
+// 3. GET ALL SCHOLARSHIPS
+// GET /api/admin/scholarships
 router.get("/scholarships", async (req, res) => {
   try {
     const scholarships = await Scholarship.find().sort({ createdAt: -1 });
@@ -69,15 +68,13 @@ router.get("/scholarships", async (req, res) => {
       scholarships,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message });
   }
 });
 
-// ======================================
 // 4. ADD SCHOLARSHIP
 // POST /api/admin/scholarships
-// ======================================
-router.post("/scholarships", async (req, res) => {
+router.post("/addScholarships", protect, adminOnly, async (req, res) => {
   try {
     const {
       name,
@@ -114,6 +111,7 @@ router.post("/scholarships", async (req, res) => {
       link,
       description,
       source,
+      addedBy: "admin",
     });
 
     res.status(201).json({
@@ -121,15 +119,13 @@ router.post("/scholarships", async (req, res) => {
       scholarship,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message });
   }
 });
 
-// ======================================
 // 5. UPDATE SCHOLARSHIP
 // PUT /api/admin/scholarships/:id
-// ======================================
-router.put("/scholarships/:id", async (req, res) => {
+router.put("/scholarships/:id", protect, adminOnly, async (req, res) => {
   try {
     const scholarship = await Scholarship.findById(req.params.id);
 
@@ -138,7 +134,6 @@ router.put("/scholarships/:id", async (req, res) => {
     }
 
     Object.assign(scholarship, req.body);
-
     await scholarship.save();
 
     res.status(200).json({
@@ -146,15 +141,33 @@ router.put("/scholarships/:id", async (req, res) => {
       scholarship,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message });
   }
 });
 
-// ======================================
-// 6. DELETE SCHOLARSHIP
+// 6
+// Get /admin/scholarships/:id
+router.get("/scholarships/:id", async (req, res) => {
+  try {
+    console.log("ID received:", req.params.id);
+
+    const scholarship = await Scholarship.findById(req.params.id);
+
+    console.log("Result:", scholarship);
+
+    if (!scholarship) {
+      return res.status(404).json({ message: "Scholarship not found" });
+    }
+
+    res.status(200).json(scholarship);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+// 7. DELETE SCHOLARSHIP
 // DELETE /api/admin/scholarships/:id
-// ======================================
-router.delete("/scholarships/:id", async (req, res) => {
+router.delete("/scholarships/:id", protect, adminOnly, async (req, res) => {
   try {
     const scholarship = await Scholarship.findById(req.params.id);
 
@@ -166,14 +179,16 @@ router.delete("/scholarships/:id", async (req, res) => {
 
     res.status(200).json({ message: "Scholarship deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message });
   }
 });
 
 // ======================================
-// 7. SYSTEM STATS
-// GET /api/admin/stats
+// SYSTEM STATS
 // ======================================
+
+// 7. GET SYSTEM STATS
+// GET /api/admin/stats
 router.get("/stats", async (req, res) => {
   try {
     const totalUsers = await User.countDocuments();
@@ -203,7 +218,7 @@ router.get("/stats", async (req, res) => {
       scholarshipsByCountry,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message });
   }
 });
 

@@ -13,6 +13,6 @@ router.post("/register", registerUser);
 // LOGIN route
 router.post("/login", loginUser);
 //get currentUser
-router.get("/getUser", protect, getCurrentUser);
+router.get("/getCurrentUser", protect, getCurrentUser);
 
 module.exports = router;

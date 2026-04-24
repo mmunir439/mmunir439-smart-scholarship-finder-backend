@@ -36,22 +36,20 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // check if user exists
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // create token
+    // ✅ Add role inside the token
     const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT, // move this to .env later
+      { id: user._id, role: user.role }, // 👈 role added here
+      process.env.JWT,
       { expiresIn: "1d" },
     );
 
@@ -61,6 +59,7 @@ const loginUser = async (req, res) => {
       user: {
         id: user._id,
         email: user.email,
+        role: user.role, // 👈 also return role in response
       },
     });
   } catch (error) {

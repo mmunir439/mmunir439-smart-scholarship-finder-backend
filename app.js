@@ -4,10 +4,9 @@ const express = require("express");
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/user");
 const adminRoutes = require("./routes/adminRoutes.js");
-const scholarshipRoutes = require("./routes/scholarshipRoutes.js");
 const academicRoutes = require("./routes/acadmic.js");
 const eligible = require("./routes/eligibility");
-const { protect } = require("./middleware/auth.js");
+const { protect, adminOnly } = require("./middleware/auth.js");
 
 const { startScheduler } = require("./scrapers/scheduler");
 
@@ -21,7 +20,6 @@ const port = process.env.PORT || 5000;
 app.use("/user", userRoutes);
 app.use("/academicRoutes", academicRoutes);
 app.use("/admin", adminRoutes);
-app.use("/scholarships", scholarshipRoutes);
 app.use("/eligible", eligible);
 
 app.get("/munir", (req, res) => {
