@@ -4,10 +4,10 @@ const express = require("express");
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/user");
 const adminRoutes = require("./routes/adminRoutes.js");
-const academicRoutes = require("./routes/acadmic.js");
+const academicRoutes=require("./routes/acadmic.js")
 const eligible = require("./routes/eligibility");
 const { protect, adminOnly } = require("./middleware/auth.js");
-
+const settingsRoutes = require("./routes/settingsRoutes");
 const { startScheduler } = require("./scrapers/scheduler");
 
 const app = express();
@@ -21,7 +21,7 @@ app.use("/user", userRoutes);
 app.use("/academicRoutes", academicRoutes);
 app.use("/admin", adminRoutes);
 app.use("/eligible", eligible);
-
+app.use("/settings", settingsRoutes);
 app.get("/munir", (req, res) => {
   res.send(`server is running on port ${port}`);
 });
