@@ -17,7 +17,8 @@ const scholarshipSchema = new mongoose.Schema({
     type: String,
   },
   deadline: {
-    type: String,
+    type: Date,
+    default: null,
   },
   link: {
     type: String,

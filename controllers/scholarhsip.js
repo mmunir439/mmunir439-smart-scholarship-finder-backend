@@ -1,5 +1,22 @@
 const Scholarship = require("../models/scholarship");
-//get all schoalrhips route in here
+// Get ALL scholarships (no filters)
+const getAllScholarships = async (req, res) => {
+  try {
+    const data = await Scholarship.find();
+
+    res.status(200).json({
+      success: true,
+      count: data.length,
+      data,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+//get all schoalrhips route in here with filters
 const getScholarships = async (req, res) => {
   try {
     const { country, degreeLevel, field } = req.query;
@@ -109,4 +126,11 @@ const deleteScholarship = async (req, res) => {
   }
 };
 
-module.exports={getScholarships,deleteScholarship,updateScholarship,createScholarship,getScholarshipById}
+module.exports = {
+  getScholarships,
+  deleteScholarship,
+  updateScholarship,
+  createScholarship,
+  getAllScholarships,
+  getScholarshipById,
+};
