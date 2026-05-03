@@ -19,7 +19,7 @@ app.use(express.json());
 const port = process.env.PORT || 5000;
 
 app.use("/user", userRoutes);
-app.use("/academicRoutes", academicRoutes);
+app.use("/academic", academicRoutes);
 app.use("/admin", adminRoutes);
 app.use("/scholarship", scholarhispRoutes);
 app.use("/eligible", eligible);

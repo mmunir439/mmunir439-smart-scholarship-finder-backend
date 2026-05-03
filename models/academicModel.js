@@ -15,9 +15,10 @@ const academicInformationSchema = new mongoose.Schema(
     },
     ielts: {
       type: Number,
-      required: true,
-      min: 0,
-      max: 9,
+      enum: [
+        0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5,
+        9,
+      ],
     },
     degreeLevel: {
       type: String,
@@ -28,6 +29,28 @@ const academicInformationSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      enum: [
+        "Computer Science",
+        "Software Engineering",
+        "Business Administration",
+        "Electrical Engineering",
+        "Mechanical Engineering",
+        "Civil Engineering",
+        "Medicine",
+        "Law",
+        "Finance",
+        "Marketing",
+        "Psychology",
+        "Data Science",
+        "Artificial Intelligence",
+        "Information Technology",
+        "Economics",
+        "Architecture",
+        "Biotechnology",
+        "Physics",
+        "Mathematics",
+        "Other",
+      ],
     },
   },
   {
@@ -35,4 +58,4 @@ const academicInformationSchema = new mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model("profileAcademic", academicInformationSchema);
+module.exports = mongoose.model("academicProfile", academicInformationSchema);

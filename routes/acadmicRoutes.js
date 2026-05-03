@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { protect, adminOnly } = require("../middleware/auth");
+
 const {
   createAcademicprofile,
   getAllAcademicProfiles,
@@ -8,14 +9,14 @@ const {
   updateMyAcademicProfile,
   deleteMyAcademicProfile,
 } = require("../controllers/academicController");
-router.post("/add", protect, createAcademicprofile);
 
-router.get("/all", getAllAcademicProfiles);
+// 🟢 USER ROUTES
+router.post("/profile", protect, createAcademicprofile);
+router.get("/profile", protect, getMyAcademicProfile);
+router.put("/profile", protect, updateMyAcademicProfile);
+router.delete("/profile", protect, deleteMyAcademicProfile);
 
-router.get("/single", protect, getMyAcademicProfile);
-
-router.put("/edit", protect, updateMyAcademicProfile);
-
-router.delete("/delete", protect, deleteMyAcademicProfile);
+// 🔐 ADMIN ROUTE
+router.get("/profiles", protect, adminOnly, getAllAcademicProfiles);
 
 module.exports = router;
