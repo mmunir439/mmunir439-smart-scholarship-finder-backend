@@ -1,47 +1,69 @@
 const mongoose = require("mongoose");
 
-const scholarshipSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  country: {
-    type: String,
-    required: true,
-  },
-  degreeLevel: {
-    type: String,
-    enum: ["Bachelor", "Master", "PhD", "Other"],
-  },
-  eligibility: {
-    type: String,
-  },
-  deadline: {
-    type: Date,
-    default: null,
-  },
-  link: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  field: {
-    type: String,
-    required: true,
-  },
-  source: {
-    type: String,
-    required: true,
-  },
-  scrapedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+const scholarshipSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    country: { type: String, required: true },
 
-// ✅ FIX HERE
-const Scholarship =
-  mongoose.models.Scholarship ||
-  mongoose.model("Scholarship", scholarshipSchema);
+    degreeLevel: {
+      type: String,
+      default: "Other",
+    },
 
-module.exports = Scholarship;
+    field: {
+      type: String,
+      default: null,
+    },
+
+    eligibility: {
+      type: String,
+      default: "Visit official website",
+    },
+
+    minCGPA: {
+      type: Number,
+      default: null,
+    },
+
+    minIELTS: {
+      type: Number,
+      default: null,
+    },
+
+    deadline: {
+      type: String,
+      default: "Check official website",
+    },
+
+    link: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
+    source: {
+      type: String,
+      required: true,
+    },
+
+    addedBy: {
+      type: String,
+      default: "scraper",
+    },
+
+    scrapedAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  { timestamps: true },
+);
+
+// Indexes
+scholarshipSchema.index({ country: 1 });
+scholarshipSchema.index({ degreeLevel: 1 });
+scholarshipSchema.index({ field: 1 });
+scholarshipSchema.index({ minCGPA: 1 });
+scholarshipSchema.index({ minIELTS: 1 });
+
+module.exports = mongoose.model("Scholarship", scholarshipSchema);
