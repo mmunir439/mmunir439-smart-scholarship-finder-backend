@@ -7,7 +7,7 @@ const {
   getMyAcademicProfile,
   updateMyAcademicProfile,
   deleteMyAcademicProfile,
-} = require("../controllers/academic");
+} = require("../controllers/academicController");
 router.post("/add", protect, createAcademicprofile);
 
 router.get("/all", getAllAcademicProfiles);

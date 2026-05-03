@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const AcademicInformation = require("../models/academic");
-const Scholarship = require("../models/scholarship"); // make sure this exists
+const AcademicInformation = require("../models/academicModel");
+const Scholarship = require("../models/scholarshipModel"); // make sure this exists
 const { protect } = require("../middleware/auth");
 // Route: POST /api/eligibility/check
 router.get("/", protect, async (req, res) => {

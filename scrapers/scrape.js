@@ -1,6 +1,6 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
-const Scholarship = require("../models/scholarship");
+const Scholarship = require("../models/scholarshipModel");
 
 const headers = {
   "User-Agent":

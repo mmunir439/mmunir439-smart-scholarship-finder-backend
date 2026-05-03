@@ -11,7 +11,7 @@ const scholarshipSchema = new mongoose.Schema({
   },
   degreeLevel: {
     type: String,
-    enum: ["Bachelor", "Master", "PhD", "Postdoc", "Other"],
+    enum: ["Bachelor", "Master", "PhD", "Other"],
   },
   eligibility: {
     type: String,
@@ -24,6 +24,10 @@ const scholarshipSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+  },
+  field: {
+    type: String,
+    required: true,
   },
   source: {
     type: String,

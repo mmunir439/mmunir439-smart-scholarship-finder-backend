@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const Settings = require("../models/Settings");
+const Settings = require("../models/SettingsModel");
 const { protect, adminOnly } = require("../middleware/auth");
 
 // ================= GET SETTINGS =================

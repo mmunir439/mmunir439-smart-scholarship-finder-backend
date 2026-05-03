@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 // Models
-const User = require("../models/User");
-const StudentProfile = require("../models/academic");
-const Scholarship = require("../models/scholarship");
+const User = require("../models/userModel.js");
+const StudentProfile = require("../models/academicModel.js");
+const Scholarship = require("../models/scholarshipModel.js");
 const { protect, adminOnly } = require("../middleware/auth.js");
 
 // ======================================
@@ -36,22 +36,7 @@ router.get("/users", protect, adminOnly, async (req, res) => {
 
 // 2. DELETE USER + PROFILE
 // DELETE /api/admin/users/:id
-router.delete("/users/:id", protect, adminOnly, async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    await StudentProfile.findOneAndDelete({ userId: user._id });
-    await user.deleteOne();
-
-    res.status(200).json({ message: "User and profile deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+router.delete("/users/:id", protect, adminOnly, );
 
 // ======================================
 // SCHOLARSHIP MANAGEMENT

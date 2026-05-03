@@ -1,4 +1,4 @@
-const AcademicInformation = require("../models/academic");
+const AcademicInformation = require("../models/academicModel");
 
 // CREATE
 const createAcademicprofile = async (req, res) => {
