@@ -23,6 +23,8 @@ const getEligibilityResults = async (req, res) => {
       deadline: s.deadline,
       link: s.link,
       source: s.source,
+      cgpa: s.minCGPA,
+      ielts: s.minIELTS,
       status: checkEligibility(student, s),
     }));
 

@@ -6,6 +6,8 @@ const Scholarship = require("../models/scholarshipModel");
 const getAllScholarships = async (req, res) => {
   try {
     const scholarships = await Scholarship.find().sort({ createdAt: -1 });
+    console.log("FIRST DOC:", scholarships[0]); // 👈 ADD THIS
+
     res
       .status(200)
       .json({ success: true, total: scholarships.length, data: scholarships });
@@ -96,13 +98,11 @@ const createScholarship = async (req, res) => {
       ...req.body,
       addedBy: "admin",
     });
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Scholarship created successfully",
-        data: scholarship,
-      });
+    res.status(201).json({
+      success: true,
+      message: "Scholarship created successfully",
+      data: scholarship,
+    });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -126,13 +126,11 @@ const updateScholarship = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Scholarship not found" });
     }
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Scholarship updated successfully",
-        data: scholarship,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Scholarship updated successfully",
+      data: scholarship,
+    });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
