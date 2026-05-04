@@ -1,7 +1,6 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
 const registerUser = async (req, res) => {
   try {
     let { name, email, password, role } = req.body;
@@ -114,6 +113,22 @@ const deleteUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({})
+      .select("-password")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      total: users.length,
+      data: users,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 //get currentuser
 const getCurrentUser = async (req, res) => {
   console.log("USER:", req.user); // 👈 add this
@@ -129,4 +144,5 @@ module.exports = {
   loginUser,
   getCurrentUser,
   deleteUser,
+  getAllUsers,
 };

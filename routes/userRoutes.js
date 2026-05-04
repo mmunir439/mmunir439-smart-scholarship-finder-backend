@@ -7,6 +7,7 @@ const {
   loginUser,
   getCurrentUser,
   deleteUser,
+  getAllUsers,
 } = require("../controllers/userController");
 
 // REGISTER route
@@ -15,6 +16,7 @@ router.post("/register", registerUser);
 // LOGIN route
 router.post("/login", loginUser);
 router.delete("/delete/:id", protect, adminOnly, deleteUser);
+router.get("/all", protect, adminOnly, getAllUsers);
 //get currentUser
 router.get("/getCurrentUser", protect, getCurrentUser);
 
