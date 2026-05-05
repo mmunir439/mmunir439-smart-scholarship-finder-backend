@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -24,6 +25,33 @@ const userSchema = new mongoose.Schema(
       enum: ["student", "admin"],
       default: "student",
     },
+    // In your userModel.js, add these fields inside userSchema:
+
+    profilePicture: {
+      type: String,
+      default: "",
+    },
+    language: {
+      type: String,
+      enum: ["English", "Urdu"],
+      default: "English",
+    },
+    textToSpeech: {
+      type: Boolean,
+      default: false,
+    },
+    emailNotifications: {
+      type: Boolean,
+      default: true,
+    },
+    eligibilityAlerts: {
+      type: Boolean,
+      default: true,
+    },
+
+    // 👇 ADD THESE
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
   },
   { timestamps: true },
 );
