@@ -1,5 +1,5 @@
 const Scholarship = require("../models/scholarshipModel");
-
+const { formatScholarshipText } = require("../utils/ttsHelper");
 // ==============================
 // 1. GET ALL SCHOLARSHIPS
 // ==============================
@@ -68,12 +68,17 @@ const getScholarshipById = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Scholarship not found" });
     }
-    res.status(200).json({ success: true, data: scholarship });
+
+    // ✅ ONLY CHANGE: add ttsText to response
+    res.status(200).json({
+      success: true,
+      data: scholarship,
+      ttsText: formatScholarshipText(scholarship),
+    });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
 };
-
 // ==============================
 // 4. CREATE SCHOLARSHIP
 // ==============================

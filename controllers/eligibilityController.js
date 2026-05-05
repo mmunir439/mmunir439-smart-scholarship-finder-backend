@@ -1,13 +1,12 @@
 // controllers/eligibilityController.js
-
+const { formatEligibilityText } = require("../utils/ttsHelper"); // ← already imported ✅
 const Scholarship = require("../models/scholarshipModel");
-const UserProfile = require("../models/scholarshipModel.js");
 const AcademicInformation = require("../models/academicModel.js");
 const { checkEligibility } = require("../services/eligibilityService");
 
 const getEligibilityResults = async (req, res) => {
   try {
-    const userId = req.user._id; // from JWT
+    const userId = req.user._id;
 
     const student = await AcademicInformation.findOne({ userId });
     if (!student) {
@@ -28,7 +27,11 @@ const getEligibilityResults = async (req, res) => {
       status: checkEligibility(student, s),
     }));
 
-    res.json(results);
+    // ✅ ONLY CHANGE: wrap results and add ttsText
+    res.json({
+      results,
+      ttsText: formatEligibilityText(results),
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
