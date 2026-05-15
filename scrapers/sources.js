@@ -1,19 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// SOURCES — scholarship data sources for the scraper
-//
-// Types:
-//   generic_blog    → static HTML blog/aggregator (needs selectors)
-//   static_fallback → JS-rendered or blocked portals (uses hardcoded fallback data)
-//   daad            → DAAD Germany scraper strategy
-//   stipendium_hungaricum → Stipendium Hungary scraper strategy
-//   turkiye_burslari     → Turkish government scraper strategy
-//   csc_china            → Chinese government scraper strategy
-//
-// To add a new source:
-//   - If it's a static HTML blog, use generic_blog and add selectors
-//   - If it's a JS-rendered official portal, use static_fallback with real data
-// ─────────────────────────────────────────────────────────────
-
 const sources = [
   // ─────────────── AGGREGATOR BLOGS (static HTML — cheerio works) ───────────────
   {

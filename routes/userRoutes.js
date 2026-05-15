@@ -11,7 +11,6 @@ const {
   resetPassword,
   getAllUsers,
   updateUser,
-  getAllUsers,
 } = require("../controllers/userController");
 
 // REGISTER route

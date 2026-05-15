@@ -224,17 +224,6 @@ const resetPassword = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-//get all users
-const getAllUsers = async (req, res) => {
-  try {
-    const users = await User.find().select(
-      "-password -resetPasswordToken -resetPasswordExpires",
-    );
-    res.status(200).json({ data: users }); // Change 'users' to 'data'
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
 // ...existing code...
 const updateUser = async (req, res) => {
   try {
@@ -320,4 +309,8 @@ module.exports = {
   loginUser,
   getCurrentUser,
   deleteUser,
+  getAllUsers,
+  forgotPassword,
+  updateUser,
+  resetPassword,
 };
