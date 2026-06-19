@@ -26,16 +26,16 @@ app.use("/scholarship", scholarhispRoutes);
 app.use("/eligible", eligibilityRoutes);
 app.use("/user/settings", settingsRoutes);
 app.use("/contact", contactRoutes);
-app.get("/munir", (req, res) => {
+app.get("/", (req, res) => {
   res.send(`server is running on port ${port}`);
 });
 
-// Connect DB first, then start server + scraper
-connectDB().then(async () => {
+// Connect DB, start server, run scraper in background
+connectDB().then(() => {
   app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+    console.log(`Server is running on port ${port}`);
+    startScheduler();
   });
-  await startScheduler();
 });
 
 module.exports = app;
