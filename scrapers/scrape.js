@@ -247,6 +247,7 @@ function buildScholarshipRecord({
     name: name.trim(),
     link: link.trim(),
     country: details.country || extractCountry(titleHint) || source.country || "International",
+    region: source.region || "USA/Europe",
     degreeLevel: details.degreeLevel || "Other",
     field: details.field || null,
     eligibility,

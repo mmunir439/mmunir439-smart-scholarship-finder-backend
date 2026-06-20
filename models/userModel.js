@@ -42,8 +42,21 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    deadlineReminders: {
+      type: Boolean,
+      default: true,
+    },
+    studyRegion: {
+      type: String,
+      enum: ["USA & Europe", "USA only", "Europe only"],
+      default: "USA & Europe",
+    },
+    preferredDegree: {
+      type: String,
+      enum: ["All", "Bachelor", "Master", "PhD"],
+      default: "All",
+    },
 
-    // 👇 ADD THESE
     resetPasswordToken: String,
     resetPasswordExpires: Date,
   },

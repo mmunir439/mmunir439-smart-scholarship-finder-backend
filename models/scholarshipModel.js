@@ -4,6 +4,10 @@ const scholarshipSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     country: { type: String, required: true },
+    region: {
+      type: String,
+      default: "USA/Europe",
+    },
 
     degreeLevel: {
       type: String,
@@ -61,6 +65,7 @@ const scholarshipSchema = new mongoose.Schema(
 
 // Indexes
 scholarshipSchema.index({ country: 1 });
+scholarshipSchema.index({ region: 1 });
 scholarshipSchema.index({ degreeLevel: 1 });
 scholarshipSchema.index({ field: 1 });
 scholarshipSchema.index({ minCGPA: 1 });
