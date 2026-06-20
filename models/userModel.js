@@ -25,12 +25,6 @@ const userSchema = new mongoose.Schema(
       enum: ["student", "admin"],
       default: "student",
     },
-    // In your userModel.js, add these fields inside userSchema:
-
-    profilePicture: {
-      type: String,
-      default: "",
-    },
     language: {
       type: String,
       enum: ["English", "Urdu"],

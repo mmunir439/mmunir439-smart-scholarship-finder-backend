@@ -25,11 +25,11 @@ const getSettings = async (req, res) => {
 
 // ─────────────────────────────────────────
 // PUT /user/settings/profile
-// Update name and profile picture
+// Update student name
 // ─────────────────────────────────────────
 const updateProfile = async (req, res) => {
   try {
-    const { name, profilePicture } = req.body;
+    const { name } = req.body;
 
     if (!name || name.trim() === "") {
       return res
@@ -39,13 +39,13 @@ const updateProfile = async (req, res) => {
 
     const updated = await User.findByIdAndUpdate(
       req.user._id,
-      { name, profilePicture },
+      { name},
       { new: true },
     ).select("-password");
 
     res
       .status(200)
-      .json({ success: true, message: "Profile updated", data: updated });
+      .json({ success: true, message: "User Name is updated Successfully", data: updated });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

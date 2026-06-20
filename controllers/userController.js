@@ -142,29 +142,45 @@ const getCurrentUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-//forgot password
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
+const RESET_TOKEN_EXPIRY_MS = 3600000; // 1 hour
+
+const hashResetToken = (token) =>
+  crypto.createHash("sha256").update(token).digest("hex");
+
 const forgotPassword = async (req, res) => {
+  const genericMessage =
+    "IWe sent reset instructions to learncodewithmunir@gmail.com. Check your inbox and spam folder.";
+
   try {
-    const { email } = req.body;
+    const email =
+      typeof req.body.email === "string"
+        ? req.body.email.toLowerCase().trim()
+        : "";
 
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    if (!emailRegex.test(email) || email.includes("..")) {
+      return res.status(400).json({ message: "Invalid email address" });
     }
 
-    // Generate token
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(200).json({ message: genericMessage });
+    }
+
     const token = crypto.randomBytes(32).toString("hex");
 
-    user.resetPasswordToken = token;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    user.resetPasswordToken = hashResetToken(token);
+    user.resetPasswordExpires = Date.now() + RESET_TOKEN_EXPIRY_MS;
     await user.save();
 
-    // Link (frontend URL)
-    const resetLink = `http://localhost:3000/reset-password/${token}`;
+    const frontendUrl =
+      process.env.FRONTEND_URL || "http://localhost:3001";
+    const resetLink = `${frontendUrl}/reset-password/${token}`;
 
     const transporter = await createTransporter();
 
@@ -177,23 +193,49 @@ const forgotPassword = async (req, res) => {
         <p>Click below to reset your password:</p>
         <a href="${resetLink}">${resetLink}</a>
         <p>This link expires in 1 hour.</p>
+        <p>If you did not request this, you can ignore this email.</p>
       `,
     });
 
-    res.status(200).json({
-      message: "Password reset email sent successfully",
+    res.status(200).json({ message: genericMessage });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to send password reset email" });
+  }
+};
+
+const verifyResetToken = async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    if (!token) {
+      return res.status(400).json({ valid: false, message: "Token is required" });
+    }
+
+    const user = await User.findOne({
+      resetPasswordToken: hashResetToken(token),
+      resetPasswordExpires: { $gt: Date.now() },
     });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ valid: false, message: "Invalid or expired token" });
+    }
+
+    res.status(200).json({ valid: true, message: "Token is valid" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
+
 const resetPassword = async (req, res) => {
   try {
-    console.log("RESET BODY:", req.body);
-
     const { token } = req.params;
-    const password = req.body.password || req.body.newPassword;
+    const rawPassword = req.body.password || req.body.newPassword;
+    const password =
+      typeof rawPassword === "string" ? rawPassword.trim() : "";
 
     if (!token) {
       return res.status(400).json({ message: "Token is required" });
@@ -203,8 +245,16 @@ const resetPassword = async (req, res) => {
       return res.status(400).json({ message: "Password is required" });
     }
 
+    if (!PASSWORD_REGEX.test(password)) {
+      return res.status(400).json({
+        field: "password",
+        message:
+          "Password must contain uppercase, lowercase, number and be at least 6 chars",
+      });
+    }
+
     const user = await User.findOne({
-      resetPasswordToken: token,
+      resetPasswordToken: hashResetToken(token),
       resetPasswordExpires: { $gt: Date.now() },
     });
 
@@ -311,6 +361,7 @@ module.exports = {
   deleteUser,
   getAllUsers,
   forgotPassword,
+  verifyResetToken,
   updateUser,
   resetPassword,
 };
