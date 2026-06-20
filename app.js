@@ -14,7 +14,8 @@ const isVercel = process.env.VERCEL === "1";
 const normalizeOrigin = (origin) =>
   typeof origin === "string" ? origin.replace(/\/$/, "") : origin;
 
-const allowedOrigins = [
+const staticAllowedOrigins = [
+  "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:5173",
   "https://smart-scholarship-finder-frontend.vercel.app",
@@ -23,27 +24,58 @@ const allowedOrigins = [
   .filter(Boolean)
   .map(normalizeOrigin);
 
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+
+  const normalized = normalizeOrigin(origin);
+
+  if (staticAllowedOrigins.includes(normalized)) return true;
+
+  // Vercel preview deployments for the frontend project
+  if (
+    /^https:\/\/smart-scholarship-finder-frontend[\w-]*\.vercel\.app$/.test(
+      normalized,
+    )
+  ) {
+    return true;
+  }
+
+  // Local dev on any port
+  if (/^http:\/\/localhost:\d+$/.test(normalized)) return true;
+
+  return false;
+}
+
+const corsOptions = {
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) {
+      return callback(null, true);
+    }
+    console.warn("CORS rejected origin:", origin);
+    return callback(null, false);
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  optionsSuccessStatus: 204,
+};
+
 const app = express();
 
-app.use(
-  cors({
-    origin(origin, callback) {
-      // Allow server-to-server / Postman / same-origin requests with no Origin header
-      if (!origin) {
-        return callback(null, true);
-      }
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
+app.use(express.json());
 
-      if (allowedOrigins.includes(normalizeOrigin(origin))) {
-        return callback(null, true);
-      }
-
-      return callback(new Error(`CORS blocked for origin: ${origin}`));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
-);app.use(express.json());
+if (isVercel) {
+  app.use(async (req, res, next) => {
+    try {
+      await connectDB();
+      next();
+    } catch (error) {
+      next(error);
+    }
+  });
+}
 
 const port = process.env.PORT || 5000;
 
@@ -63,10 +95,17 @@ app.get("/", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  if (err.message?.startsWith("CORS blocked")) {
-    return res.status(403).json({ success: false, message: err.message });
+  const origin = req.headers.origin;
+  if (origin && isAllowedOrigin(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", normalizeOrigin(origin));
+    res.setHeader("Access-Control-Allow-Credentials", "true");
   }
-  next(err);
+
+  const status = err.status || 500;
+  res.status(status).json({
+    success: false,
+    message: err.message || "Internal server error",
+  });
 });
 
 if (!isVercel) {
