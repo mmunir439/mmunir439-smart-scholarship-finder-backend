@@ -12,9 +12,7 @@ const contactRoutes = require("./routes/contactRoutes");
 const isVercel = process.env.VERCEL === "1";
 
 const allowedOrigins = [
-  "http://localhost:3001",
   process.env.FRONTEND_URL,
-  "https://smart-scholarship-finder-frontend.vercel.app",
 ]
   .filter(Boolean)
   .map((origin) => origin.replace(/\/$/, ""));
