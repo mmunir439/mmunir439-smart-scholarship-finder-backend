@@ -1,16 +1,33 @@
 const Scholarship = require("../models/scholarshipModel");
+const { filterScholarships } = require("../services/scholarshipFilterService");
+
+function applyGuidanceFilters(scholarships, query) {
+  const { studyRegion, preferredDegree } = query;
+  if (!studyRegion && !preferredDegree) return scholarships;
+
+  return filterScholarships(scholarships, {
+    studyRegion: studyRegion || "USA & Europe",
+    preferredDegree: preferredDegree || "All",
+  });
+}
 
 // ==============================
 // 1. GET ALL SCHOLARSHIPS
 // ==============================
 const getAllScholarships = async (req, res) => {
   try {
-    const scholarships = await Scholarship.find().sort({ createdAt: -1 });
-    console.log("FIRST DOC:", scholarships[0]); // 👈 ADD THIS
+    let scholarships = await Scholarship.find().sort({ createdAt: -1 });
+    scholarships = applyGuidanceFilters(scholarships, req.query);
 
-    res
-      .status(200)
-      .json({ success: true, total: scholarships.length, data: scholarships });
+    res.status(200).json({
+      success: true,
+      total: scholarships.length,
+      data: scholarships,
+      filters: {
+        studyRegion: req.query.studyRegion || null,
+        preferredDegree: req.query.preferredDegree || null,
+      },
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -28,18 +45,13 @@ const getScholarships = async (req, res) => {
     if (degreeLevel) filter.degreeLevel = degreeLevel;
     if (field) filter.field = field;
 
-    // minCGPA filter: return scholarships where the required CGPA
-    // is less than or equal to what the student has
-    // e.g. student has 3.2 → show scholarships requiring ≤ 3.2
     if (minCGPA) {
       filter.$or = [
         { minCGPA: { $lte: Number(minCGPA) } },
-        { minCGPA: null }, // also include scholarships with no CGPA listed
+        { minCGPA: null },
       ];
     }
 
-    // maxIELTS filter: return scholarships the student qualifies for
-    // e.g. student has 6.5 → show scholarships requiring ≤ 6.5
     if (maxIELTS) {
       filter.$or = [
         ...(filter.$or || []),
@@ -48,10 +60,18 @@ const getScholarships = async (req, res) => {
       ];
     }
 
-    const scholarships = await Scholarship.find(filter).sort({ createdAt: -1 });
-    res
-      .status(200)
-      .json({ success: true, count: scholarships.length, data: scholarships });
+    let scholarships = await Scholarship.find(filter).sort({ createdAt: -1 });
+    scholarships = applyGuidanceFilters(scholarships, req.query);
+
+    res.status(200).json({
+      success: true,
+      count: scholarships.length,
+      data: scholarships,
+      filters: {
+        studyRegion: req.query.studyRegion || null,
+        preferredDegree: req.query.preferredDegree || null,
+      },
+    });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }

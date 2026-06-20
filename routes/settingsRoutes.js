@@ -6,14 +6,16 @@ const {
   updateProfile,
   changePassword,
   updateAccessibility,
+  updateScholarshipGuidance,
   updateNotifications,
   deleteAccount,
 } = require("../controllers/settingsController");
 
 router.get("/", protect, getSettings);                          // GET all settings
-router.put("/profile", protect, updateProfile);                 // Update name/picture
+router.put("/profile", protect, updateProfile);                 // Update name
 router.put("/change-password", protect, changePassword);        // Change password
 router.put("/accessibility", protect, updateAccessibility);     // Language/TTS
+router.put("/scholarship-guidance", protect, updateScholarshipGuidance);
 router.put("/notifications", protect, updateNotifications);     // Notifications
 router.delete("/delete-account", protect, deleteAccount);       // Delete account
 

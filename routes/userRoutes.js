@@ -8,10 +8,10 @@ const {
   getCurrentUser,
   deleteUser,
   forgotPassword,
+  verifyResetToken,
   resetPassword,
   getAllUsers,
   updateUser,
-  getAllUsers,
 } = require("../controllers/userController");
 
 // REGISTER route
@@ -25,7 +25,8 @@ router.get("/all", protect, adminOnly, getAllUsers);
 //get currentUser
 router.get("/getCurrentUser", protect, getCurrentUser);
 router.post("/forgot-password", forgotPassword);
-router.put("/update", protect, updateUser);
+router.get("/reset-password/:token", verifyResetToken);
 router.post("/reset-password/:token", resetPassword);
+router.put("/update", protect, updateUser);
 
 module.exports = router;
