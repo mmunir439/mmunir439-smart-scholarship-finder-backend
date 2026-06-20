@@ -15,7 +15,7 @@ const contactRoutes = require("./routes/contactRoutes");
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:3001", credentials: true }));
+app.use(cors({ origin: "https://smart-scholarship-finder-frontend.vercel.app/", credentials: true }));
 app.use(express.json());
 
 const port = process.env.PORT || 5000;
