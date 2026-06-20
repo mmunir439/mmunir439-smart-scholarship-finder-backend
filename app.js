@@ -11,26 +11,39 @@ const contactRoutes = require("./routes/contactRoutes");
 
 const isVercel = process.env.VERCEL === "1";
 
+const normalizeOrigin = (origin) =>
+  typeof origin === "string" ? origin.replace(/\/$/, "") : origin;
+
 const allowedOrigins = [
+  "http://localhost:3001",
+  "http://localhost:5173",
+  "https://smart-scholarship-finder-frontend.vercel.app",
   process.env.FRONTEND_URL,
 ]
   .filter(Boolean)
-  .map((origin) => origin.replace(/\/$/, ""));
+  .map(normalizeOrigin);
 
 const app = express();
 
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ""))) {
+      // Allow server-to-server / Postman / same-origin requests with no Origin header
+      if (!origin) {
         return callback(null, true);
       }
+
+      if (allowedOrigins.includes(normalizeOrigin(origin))) {
+        return callback(null, true);
+      }
+
       return callback(new Error(`CORS blocked for origin: ${origin}`));
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
-);
-app.use(express.json());
+);app.use(express.json());
 
 const port = process.env.PORT || 5000;
 
